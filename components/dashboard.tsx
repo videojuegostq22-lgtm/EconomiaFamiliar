@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useTheme } from "next-themes";
 import {
   ArrowDownLeft,
+  ArrowLeftRight,
   ArrowUpRight,
   Banknote,
   BarChart3,
@@ -65,10 +66,14 @@ const formatDate = (date: string) =>
   }).format(new Date(`${date}T12:00:00`));
 
 const isIncome = (type: string) =>
-  ["income", "ingreso", "credit", "deposit"].includes(type.toLowerCase());
+  ["income", "ingreso", "credit", "deposit"].includes(
+    type.toLowerCase()
+  );
 
 const isExpense = (type: string) =>
-  ["expense", "gasto", "debit", "withdrawal"].includes(type.toLowerCase());
+  ["expense", "gasto", "debit", "withdrawal"].includes(
+    type.toLowerCase()
+  );
 
 const isTransfer = (type: string) =>
   ["transfer", "transferencia"].includes(type.toLowerCase());
@@ -108,10 +113,11 @@ const getMovementIcon = (transaction: Transaction) => {
   }
 
   if (isTransfer(transaction.transaction_type)) {
-    return CreditCard;
+    return ArrowLeftRight;
   }
 
-  const description = transaction.description.toLowerCase();
+  const description =
+    transaction.description?.toLowerCase() ?? "";
 
   if (
     description.includes("super") ||
@@ -132,14 +138,15 @@ const getMovementIcon = (transaction: Transaction) => {
   return ArrowUpRight;
 };
 
-export default function Dashboard({ initialData }: DashboardProps) {
+export default function Dashboard({
+  initialData,
+}: DashboardProps) {
   const { theme, setTheme } = useTheme();
 
   const [period, setPeriod] = useState("Este mes");
 
-  const [transactions, setTransactions] = useState<Transaction[]>(
-    initialData.transactions
-  );
+  const [transactions, setTransactions] =
+    useState<Transaction[]>(initialData.transactions);
 
   const { accounts, categories } = initialData;
 
@@ -552,7 +559,7 @@ export default function Dashboard({ initialData }: DashboardProps) {
               },
               {
                 label: "Presupuestos",
-                href: "#",
+                href: "/budgets",
               },
             ].map((item, i) => (
               <Link
@@ -1114,59 +1121,97 @@ export default function Dashboard({ initialData }: DashboardProps) {
         </section>
       </div>
 
-      {/* NAVEGACIÓN INFERIOR MÓVIL */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 flex w-full items-center justify-around border-t border-[var(--border)] bg-[var(--card)] p-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] shadow-2xl backdrop-blur-xl lg:hidden">
-        <Link
-          href="/"
-          className="flex flex-1 items-center justify-center"
-          aria-label="Dashboard"
-        >
-          <span className="rounded-xl bg-black/[.06] p-3 dark:bg-white/[.08]">
-            <BarChart3 size={19} />
-          </span>
-        </Link>
+      {/* MENÚ INFERIOR MÓVIL */}
+      <nav
+        className="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--border)] bg-[var(--card)]/95 shadow-2xl backdrop-blur-xl lg:hidden"
+        style={{
+          paddingBottom:
+            "env(safe-area-inset-bottom)",
+        }}
+      >
+        <div className="flex w-full items-stretch">
+          {/* INICIO */}
+          <Link
+            href="/"
+            aria-label="Inicio"
+            className="flex min-w-0 flex-1 flex-col items-center justify-center gap-1 py-2 text-[var(--accent)]"
+          >
+            <BarChart3 size={21} />
 
-        <Link
-          href="/movements"
-          className="flex flex-1 items-center justify-center"
-          aria-label="Movimientos"
-        >
-          <span className="rounded-xl p-3 text-[var(--muted)]">
-            <CreditCard size={19} />
-          </span>
-        </Link>
+            <span className="text-[10px] font-medium">
+              Inicio
+            </span>
+          </Link>
 
-        <button
-          type="button"
-          onClick={openNewMovement}
-          className="flex flex-1 items-center justify-center"
-          aria-label="Añadir movimiento"
-        >
-          <span className="rounded-xl bg-[var(--accent)] p-3 text-white shadow-lg shadow-blue-500/20">
-            <Plus size={20} />
-          </span>
-        </button>
+          {/* MOVIMIENTOS */}
+          <Link
+            href="/movements"
+            aria-label="Movimientos"
+            className="flex min-w-0 flex-1 flex-col items-center justify-center gap-1 py-2 text-[var(--muted)]"
+          >
+            <CreditCard size={21} />
 
-        <Link
-          href="/accounts"
-          className="flex flex-1 items-center justify-center"
-          aria-label="Cuentas"
-        >
-          <span className="rounded-xl p-3 text-[var(--muted)]">
-            <Wallet size={19} />
-          </span>
-        </Link>
+            <span className="text-[10px] font-medium">
+              Movimientos
+            </span>
+          </Link>
 
-        <button
-          type="button"
-          className="flex flex-1 items-center justify-center"
-          aria-label="Configuración"
-        >
-          <span className="rounded-xl p-3 text-[var(--muted)]">
-            <Settings size={19} />
-          </span>
-        </button>
-      </div>
+          {/* AÑADIR */}
+          <button
+            type="button"
+            onClick={openNewMovement}
+            aria-label="Añadir movimiento"
+            className="flex min-w-0 flex-1 flex-col items-center justify-center gap-1 py-2 text-[var(--accent)]"
+          >
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--accent)] text-white shadow-lg shadow-blue-500/25">
+              <Plus size={21} />
+            </span>
+
+            <span className="text-[10px] font-medium">
+              Añadir
+            </span>
+          </button>
+
+          {/* CUENTAS */}
+          <Link
+            href="/accounts"
+            aria-label="Cuentas"
+            className="flex min-w-0 flex-1 flex-col items-center justify-center gap-1 py-2 text-[var(--muted)]"
+          >
+            <Wallet size={21} />
+
+            <span className="text-[10px] font-medium">
+              Cuentas
+            </span>
+          </Link>
+
+          {/* PRESUPUESTOS */}
+          <Link
+            href="/budgets"
+            aria-label="Presupuestos"
+            className="flex min-w-0 flex-1 flex-col items-center justify-center gap-1 py-2 text-[var(--muted)]"
+          >
+            <Banknote size={21} />
+
+            <span className="text-[10px] font-medium">
+              Presupuestos
+            </span>
+          </Link>
+
+          {/* CONFIGURACIÓN */}
+          <Link
+            href="/settings"
+            aria-label="Configuración"
+            className="flex min-w-0 flex-1 flex-col items-center justify-center gap-1 py-2 text-[var(--muted)]"
+          >
+            <Settings size={21} />
+
+            <span className="text-[10px] font-medium">
+              Configuración
+            </span>
+          </Link>
+        </div>
+      </nav>
 
       {showAdd && (
         <div
@@ -1174,7 +1219,7 @@ export default function Dashboard({ initialData }: DashboardProps) {
           onClick={closeForm}
         >
           <div
-            className="glass w-full max-w-lg rounded-3xl p-6 shadow-2xl"
+            className="glass max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl p-6 shadow-2xl"
             onClick={(event) =>
               event.stopPropagation()
             }
