@@ -5,13 +5,11 @@ import Link from "next/link";
 import { useTheme } from "next-themes";
 import {
   ArrowDownLeft,
-  ArrowLeftRight,
   ArrowUpRight,
   Banknote,
   BarChart3,
   CreditCard,
   Home,
-  Menu,
   Moon,
   MoreHorizontal,
   Plus,
@@ -137,7 +135,6 @@ const getMovementIcon = (transaction: Transaction) => {
 export default function Dashboard({ initialData }: DashboardProps) {
   const { theme, setTheme } = useTheme();
 
-  const [mobileNav, setMobileNav] = useState(false);
   const [period, setPeriod] = useState("Este mes");
 
   const [transactions, setTransactions] = useState<Transaction[]>(
@@ -526,18 +523,10 @@ export default function Dashboard({ initialData }: DashboardProps) {
   };
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen pb-24 lg:pb-0">
       <header className="sticky top-0 z-30 border-b border-[var(--border)] bg-[var(--background)]/80 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
-            <button
-              className="rounded-xl p-2 lg:hidden"
-              onClick={() => setMobileNav(true)}
-              aria-label="Abrir menú"
-            >
-              <Menu size={22} />
-            </button>
-
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--accent)] text-white">
               <Wallet size={19} />
             </div>
@@ -1125,103 +1114,59 @@ export default function Dashboard({ initialData }: DashboardProps) {
         </section>
       </div>
 
-      <div className="fixed bottom-4 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-1.5 shadow-2xl backdrop-blur-xl lg:hidden">
-        <button className="rounded-xl bg-black/[.06] p-3 dark:bg-white/[.08]">
-          <BarChart3 size={19} />
-        </button>
+      {/* NAVEGACIÓN INFERIOR MÓVIL */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 flex w-full items-center justify-around border-t border-[var(--border)] bg-[var(--card)] p-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] shadow-2xl backdrop-blur-xl lg:hidden">
+        <Link
+          href="/"
+          className="flex flex-1 items-center justify-center"
+          aria-label="Dashboard"
+        >
+          <span className="rounded-xl bg-black/[.06] p-3 dark:bg-white/[.08]">
+            <BarChart3 size={19} />
+          </span>
+        </Link>
 
         <Link
           href="/movements"
-          className="rounded-xl p-3 text-[var(--muted)]"
+          className="flex flex-1 items-center justify-center"
+          aria-label="Movimientos"
         >
-          <CreditCard size={19} />
+          <span className="rounded-xl p-3 text-[var(--muted)]">
+            <CreditCard size={19} />
+          </span>
         </Link>
 
         <button
           type="button"
           onClick={openNewMovement}
-          className="rounded-xl bg-[var(--accent)] p-3 text-white"
+          className="flex flex-1 items-center justify-center"
+          aria-label="Añadir movimiento"
         >
-          <Plus size={20} />
+          <span className="rounded-xl bg-[var(--accent)] p-3 text-white shadow-lg shadow-blue-500/20">
+            <Plus size={20} />
+          </span>
         </button>
 
         <Link
           href="/accounts"
-          className="rounded-xl p-3 text-[var(--muted)]"
+          className="flex flex-1 items-center justify-center"
+          aria-label="Cuentas"
         >
-          <Wallet size={19} />
+          <span className="rounded-xl p-3 text-[var(--muted)]">
+            <Wallet size={19} />
+          </span>
         </Link>
 
-        <button className="rounded-xl p-3 text-[var(--muted)]">
-          <Settings size={19} />
+        <button
+          type="button"
+          className="flex flex-1 items-center justify-center"
+          aria-label="Configuración"
+        >
+          <span className="rounded-xl p-3 text-[var(--muted)]">
+            <Settings size={19} />
+          </span>
         </button>
       </div>
-
-      {mobileNav && (
-        <div
-          className="fixed inset-0 z-50 bg-black/30 lg:hidden"
-          onClick={() => setMobileNav(false)}
-        >
-          <aside
-            className="h-full w-[280px] bg-[var(--background)] p-5"
-            onClick={(e) =>
-              e.stopPropagation()
-            }
-          >
-            <div className="mb-8 flex items-center justify-between">
-              <b>Economía Familiar</b>
-
-              <button
-                onClick={() =>
-                  setMobileNav(false)
-                }
-              >
-                <X />
-              </button>
-            </div>
-
-            <div className="space-y-1">
-              {[
-                {
-                  label: "Dashboard",
-                  href: "/",
-                },
-                {
-                  label: "Movimientos",
-                  href: "/movements",
-                },
-                {
-                  label: "Cuentas",
-                  href: "/accounts",
-                },
-                {
-                  label: "Presupuestos",
-                  href: "#",
-                },
-                {
-                  label: "Configuración",
-                  href: "#",
-                },
-              ].map((item, i) => (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  onClick={() =>
-                    setMobileNav(false)
-                  }
-                  className={`block w-full rounded-xl px-4 py-3 text-left ${
-                    i === 0
-                      ? "bg-black/[.06] font-medium dark:bg-white/[.08]"
-                      : "text-[var(--muted)]"
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </div>
-          </aside>
-        </div>
-      )}
 
       {showAdd && (
         <div
