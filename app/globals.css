@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f5f5f7;
+  --foreground: #111113;
+  --card: rgba(255,255,255,.78);
+  --border: rgba(0,0,0,.07);
+  --muted: #707078;
+  --accent: #007aff;
+}
+.dark {
+  --background: #0b0b0d;
+  --foreground: #f5f5f7;
+  --card: rgba(28,28,30,.82);
+  --border: rgba(255,255,255,.09);
+  --muted: #a1a1aa;
+  --accent: #0a84ff;
+}
+* { box-sizing: border-box; }
+html { color-scheme: light; }
+html.dark { color-scheme: dark; }
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", system-ui, sans-serif;
+}
+button, input, select { font: inherit; }
+.glass {
+  background: var(--card);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+}
+.soft-shadow { box-shadow: 0 12px 40px rgba(0,0,0,.06); }
+.dark .soft-shadow { box-shadow: 0 12px 40px rgba(0,0,0,.25); }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: rgba(128,128,128,.25); border-radius: 99px; }
