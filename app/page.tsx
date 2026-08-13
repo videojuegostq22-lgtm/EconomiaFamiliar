@@ -1,5 +1,8 @@
 import Dashboard from "@/components/dashboard";
+import { getFinanceData } from "@/lib/supabase/finance";
 
-export default function Home() {
-  return <Dashboard />;
+export default async function Home() {
+  const financeData = await getFinanceData();
+
+  return <Dashboard initialData={financeData} />;
 }
